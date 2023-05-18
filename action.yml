@@ -55,36 +55,36 @@ runs:
       git submodule update --remote
       git checkout -b $GITHUB_RUN_ID
       git commit -am "updating submodules"
-      git push --set-upstream origin $GITHUB_RUN_ID
+  #     git push --set-upstream origin $GITHUB_RUN_ID
 
-  - name: Create pull request against target branch
-    uses: actions/github-script@v5
-    with:
-      github-token: ${{ inputs.github_token }}
-      script: |
-        await github.rest.pulls.create({
-          owner: '${{ inputs.owner }}',
-          repo: '${{ inputs.parent_repository }}'.split('/')[1].trim(),
-          head: process.env.GITHUB_RUN_ID,
-          base: '${{ inputs.pr_against_branch }}',
-          title: `[Auto-generated] Submodule Updates ${process.env.GITHUB_RUN_ID}`,
-          body: `[Auto-generated] Submodule Updates ${process.env.GITHUB_RUN_ID}`,
-        });
+  # - name: Create pull request against target branch
+  #   uses: actions/github-script@v5
+  #   with:
+  #     github-token: ${{ inputs.github_token }}
+  #     script: |
+  #       await github.rest.pulls.create({
+  #         owner: '${{ inputs.owner }}',
+  #         repo: '${{ inputs.parent_repository }}'.split('/')[1].trim(),
+  #         head: process.env.GITHUB_RUN_ID,
+  #         base: '${{ inputs.pr_against_branch }}',
+  #         title: `[Auto-generated] Submodule Updates ${process.env.GITHUB_RUN_ID}`,
+  #         body: `[Auto-generated] Submodule Updates ${process.env.GITHUB_RUN_ID}`,
+  #       });
 
-  - name: Add labels
-    uses: actions/github-script@v5
-    with:
-      github-token: ${{ inputs.github_token }}
-      script: |
-        const res = await github.rest.issues.listForRepo({
-          owner: '${{ inputs.owner }}',
-          repo: '${{ inputs.parent_repository }}'.split('/')[1].trim(),
-        });
-        const pr = res.data.filter(i => i.title.includes(process.env.GITHUB_RUN_ID));
-        const prNumber = pr[0].number;  
-        await github.rest.issues.addLabels({
-          issue_number: prNumber,
-          owner: '${{ inputs.owner }}',
-          repo: '${{ inputs.parent_repository }}'.split('/')[1].trim(),
-          labels: ['${{ inputs.label }}']
-        });
+  # - name: Add labels
+  #   uses: actions/github-script@v5
+  #   with:
+  #     github-token: ${{ inputs.github_token }}
+  #     script: |
+  #       const res = await github.rest.issues.listForRepo({
+  #         owner: '${{ inputs.owner }}',
+  #         repo: '${{ inputs.parent_repository }}'.split('/')[1].trim(),
+  #       });
+  #       const pr = res.data.filter(i => i.title.includes(process.env.GITHUB_RUN_ID));
+  #       const prNumber = pr[0].number;  
+  #       await github.rest.issues.addLabels({
+  #         issue_number: prNumber,
+  #         owner: '${{ inputs.owner }}',
+  #         repo: '${{ inputs.parent_repository }}'.split('/')[1].trim(),
+  #         labels: ['${{ inputs.label }}']
+  #       });
